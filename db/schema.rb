@@ -16,9 +16,9 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
   enable_extension "plpgsql"
 
   create_table "legs", force: :cascade do |t|
+    t.float "distance", null: false
     t.integer "start_id", null: false
     t.integer "finish_id", null: false
-    t.float "distance", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,11 +56,11 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
 
   create_table "routes", force: :cascade do |t|
     t.integer "race_id", null: false
-    t.integer "legs", default: [], null: false, array: true
+    t.integer "legs_array", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["legs"], name: "index_routes_on_legs", using: :gin
-    t.index ["race_id", "legs"], name: "index_routes_on_race_id_and_legs", unique: true
+    t.index ["legs_array"], name: "index_routes_on_legs_array", using: :gin
+    t.index ["race_id", "legs_array"], name: "index_routes_on_race_id_and_legs_array", unique: true
   end
 
 end
