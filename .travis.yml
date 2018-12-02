@@ -16,7 +16,7 @@ services:
   - postgresql
 
 addons:
-  postgresql: "11.1"
+  postgresql: "9.6"
 
 before_script:
   - "psql -c 'create database rodrouter_test;' -U postgres"
