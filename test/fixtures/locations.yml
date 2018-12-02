@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  max_capacity: 1
+  ideal_capacity: 1
+  street_address: MyString
+  city: MyString
+  state: MyString
+  lat: 
+  lat: 
+  lon: 
+  lon: 
+  enabled: false
+
+two:
+  name: MyString
+  max_capacity: 1
+  ideal_capacity: 1
+  street_address: MyString
+  city: MyString
+  state: MyString
+  lat: 
+  lat: 
+  lon: 
+  lon: 
+  enabled: false
