@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
 
   create_table "legs", force: :cascade do |t|
     t.integer "start_id", null: false
-    t.integer "end_id", null: false
+    t.integer "finish_id", null: false
     t.float "distance", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
     t.float "min_leg_distance", null: false
     t.float "max_leg_distance", null: false
     t.integer "start_id"
-    t.integer "end_id"
+    t.integer "finish_id"
     t.integer "distance_unit", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

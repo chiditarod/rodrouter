@@ -10,7 +10,7 @@ class CreateRaces < ActiveRecord::Migration[5.2]
       t.float :min_leg_distance, null: false
       t.float :max_leg_distance, null: false
       t.integer :start_id
-      t.integer :end_id
+      t.integer :finish_id
       t.integer :distance_unit, default: 0, null: false
 
       t.timestamps
