@@ -7,10 +7,8 @@ class CreateLocations < ActiveRecord::Migration[5.2]
       t.string :street_address
       t.string :city
       t.string :state
-      t.decimal10 :lat
-      t.decimal2 :lat
-      t.decimal10 :lon
-      t.decimal2 :lon
+      t.float :lat
+      t.float :lon
 
       t.timestamps
     end
