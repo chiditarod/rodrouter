@@ -13,6 +13,14 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'factory_bot'
+require 'simplecov'
+
+SimpleCov.start 'rails' do
+ add_filter "/vendor/"
+end
+
 RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
