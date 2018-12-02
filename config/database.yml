@@ -9,14 +9,14 @@ default: &default
 
 development:
   <<: *default
-  database: rodroute_development
+  database: rodrouter_development
   password: 123abc
 
 test:
   <<: *default
-  database: rodroute_test
+  database: rodrouter_test
   password: 123abc
 
 production:
   <<: *default
-  database: rodroute_production
+  database: rodrouter_production
