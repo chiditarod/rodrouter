@@ -1,14 +1,20 @@
-version: "3.3"
+version: "3.4"
+
+x-default: &default
+  build: .
+  depends_on:
+    - db
+  environment:
+    - DATABASE_URL=postgres://postgres@db:5432
+  networks:
+    - web
+  volumes:
+    - bundle:/bundle
+    - .:/app
+
 services:
   web:
-    build: .
-    depends_on:
-      - db
-    networks:
-      - web
-    volumes:
-      - bundle_cache:/bundle_cache
-      - .:/app
+    <<: *default
     ports:
       - "3000:3000"
 
@@ -16,17 +22,17 @@ services:
     image: postgres:11.1-alpine
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=123abc
     networks:
       - web
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
+      - ./docker/init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
 
 networks:
   web:
 
 volumes:
-  bundle_cache:
+  bundle:
   pgdata:
