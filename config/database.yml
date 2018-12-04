@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  ncoding: unicode
+  timeout: 5000
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  user: postgres
+  host: localhost
+  port: 5432
+
+development:
+  <<: *default
+  database: rodrouter_development
+  password: 123abc
+
+test:
+  <<: *default
+  database: rodrouter_test
+  password: 123abc
+
+production:
+  <<: *default
+  database: rodrouter_production
