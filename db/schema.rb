@@ -40,10 +40,12 @@ ActiveRecord::Schema.define(version: 2019_01_28_074555) do
     t.string "street_address"
     t.string "city"
     t.string "state"
+    t.integer "zip"
     t.float "lat"
-    t.float "lon"
+    t.float "lng"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["lat", "lng"], name: "index_locations_on_lat_and_lng", unique: true
     t.index ["name"], name: "index_locations_on_name", unique: true
   end
 

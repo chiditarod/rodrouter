@@ -2,6 +2,8 @@ class Location < ApplicationRecord
   validates :max_capacity, :ideal_capacity,
     numericality: { only_integer: true }
 
+  validates :name, presence: true, uniqueness: true
+
   #has_many :races_where_starting_line, class_name: "Race", foreign_key: "start_id"
   #has_many :races_where_finish_line, class_name: "Race", foreign_key: "finish_id"
 
@@ -11,6 +13,10 @@ class Location < ApplicationRecord
   #scope :used_as_finish_line, -> { joins(:races).where(races: { finish_id: id }) }
 
   #scope :for_race, ->(race_id) { wh}
+
+  def full_address
+    "#{street_address} #{city} #{state} #{zip}"
+  end
 
   def to_s
     name
