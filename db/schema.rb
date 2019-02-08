@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_02_025653) do
+ActiveRecord::Schema.define(version: 2019_01_28_074555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
     t.integer "finish_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["start_id", "finish_id"], name: "index_legs_on_start_id_and_finish_id", unique: true
+  end
+
+  create_table "legs_routes", id: false, force: :cascade do |t|
+    t.bigint "leg_id", null: false
+    t.bigint "route_id", null: false
+    t.integer "order", null: false
+    t.index ["leg_id", "route_id", "order"], name: "index_legs_routes_on_leg_id_and_route_id_and_order", unique: true
+    t.index ["leg_id"], name: "index_legs_routes_on_leg_id"
+    t.index ["route_id"], name: "index_legs_routes_on_route_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -37,6 +47,13 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
     t.index ["name"], name: "index_locations_on_name", unique: true
   end
 
+  create_table "locations_races", id: false, force: :cascade do |t|
+    t.bigint "location_id", null: false
+    t.bigint "race_id", null: false
+    t.index ["location_id"], name: "index_locations_races_on_location_id"
+    t.index ["race_id"], name: "index_locations_races_on_race_id"
+  end
+
   create_table "races", force: :cascade do |t|
     t.string "name", null: false
     t.integer "num_stops", null: false
@@ -49,7 +66,6 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
     t.integer "start_id"
     t.integer "finish_id"
     t.integer "distance_unit", default: 0, null: false
-    t.integer "location_id_pool", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_races_on_name", unique: true
@@ -57,11 +73,9 @@ ActiveRecord::Schema.define(version: 2018_12_02_025653) do
 
   create_table "routes", force: :cascade do |t|
     t.integer "race_id", null: false
-    t.integer "leg_ids", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["leg_ids"], name: "index_routes_on_leg_ids", using: :gin
-    t.index ["race_id", "leg_ids"], name: "index_routes_on_race_id_and_leg_ids", unique: true
+    t.boolean "leg_threshold_crossed", default: false, null: false
   end
 
 end

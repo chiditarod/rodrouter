@@ -12,7 +12,6 @@ class CreateRaces < ActiveRecord::Migration[5.2]
       t.integer :start_id
       t.integer :finish_id
       t.integer :distance_unit, default: 0, null: false
-      t.integer :location_id_pool, array: true, default: []
 
       t.timestamps
     end

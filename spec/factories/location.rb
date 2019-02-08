@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :location do
-    sequence(:name) { |n| "Location #{n}" }
+    name { Faker::Nation.unique.capital_city }
     max_capacity { 150 }
     ideal_capacity { 100 }
   end

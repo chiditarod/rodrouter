@@ -1,6 +1,6 @@
 default: &default
   adapter: postgresql
-  ncoding: unicode
+  encoding: unicode
   timeout: 5000
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   user: postgres
@@ -10,12 +10,10 @@ default: &default
 development:
   <<: *default
   database: rodrouter_development
-  password: 123abc
 
 test:
   <<: *default
   database: rodrouter_test
-  password: 123abc
 
 production:
   <<: *default

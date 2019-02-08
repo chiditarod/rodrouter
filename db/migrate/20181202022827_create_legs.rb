@@ -7,5 +7,7 @@ class CreateLegs < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
+
+    add_index :legs, [:start_id, :finish_id], unique: true
   end
 end
