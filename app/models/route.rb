@@ -21,6 +21,8 @@ class Route < ApplicationRecord
   end
 
   validate :validate_finish_is_at_end, if: :has_all_legs?
+  validate :validate_leg_uniqueness, if: :has_all_legs?
+
   validate :validate_finish_not_used_until_end, unless: :has_all_legs?
 
   def complete?
@@ -44,7 +46,8 @@ class Route < ApplicationRecord
     (race.mi? ? Distances.m_to_mi(meters) : meters / 1000).round(2)
   end
 
-  def validate_route_uniqueness
+  def validate_leg_uniqueness
+    #if Route.where(legs: legs).any?
   end
 
   def validate_leg_count
