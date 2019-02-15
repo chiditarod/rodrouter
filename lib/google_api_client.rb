@@ -1,6 +1,6 @@
 class GoogleApiClient
 
-  attr_accessor :client
+  attr_reader :client
 
   def initialize
     unless ENV['GOOGLE_API_KEY']

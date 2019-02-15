@@ -4,6 +4,11 @@ Ruby on Rails app to find viable routes for the CHIditarod
 
 [![Build Status](https://travis-ci.com/chiditarod/rodrouter.svg?branch=master)](https://travis-ci.com/chiditarod/rodrouter) [![Maintainability](https://api.codeclimate.com/v1/badges/35fd2373a2aa927c424e/maintainability)](https://codeclimate.com/github/chiditarod/rodrouter/maintainability)
 
+## Runtime Environment
+
+| Variable Name | Purpose |
+| ---- | ------- |
+| `GOOGLE_API_KEY` | Google Cloud Platform API key with access to the [Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/intro) |
 
 ## Developer Setup
 
