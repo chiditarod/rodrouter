@@ -7,11 +7,15 @@ class CreateLocations < ActiveRecord::Migration[5.2]
       t.string :street_address
       t.string :city
       t.string :state
+      t.integer :zip
+      t.string :country
       t.float :lat
-      t.float :lon
+      t.float :lng
 
       t.timestamps
     end
+
     add_index :locations, :name, unique: true
+    add_index :locations, [:lat, :lng], unique: true
   end
 end

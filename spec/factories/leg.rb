@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :leg do
     association :start, factory: :location
     association :finish, factory: :location
-    distance { 1.0 }
+    distance { 1609 } # 1 mi = 1609.34 meters
   end
 end

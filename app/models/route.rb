@@ -2,7 +2,7 @@ class Route < ApplicationRecord
   belongs_to :race
   validates :race, presence: true
 
-  has_many :legs_routes, -> { order('legs_routes.order') } #, dependent: :destroy
+  has_many :legs_routes, -> { order('legs_routes.order') }, dependent: :delete_all
   has_many :legs, through: :legs_routes
 
   validate :validate_leg_distances,
@@ -40,7 +40,8 @@ class Route < ApplicationRecord
   end
 
   def distance
-    legs.inject(0.0) { |memo, l| memo += l.distance }.round(2)
+    meters = legs.inject(0) { |memo, l| memo += l.distance }
+    (race.mi? ? Distances.m_to_mi(meters) : meters / 1000).round(2)
   end
 
   def validate_route_uniqueness
@@ -69,24 +70,24 @@ class Route < ApplicationRecord
   end
 
   def validate_route_length
-    total_distance = legs.map(&:distance).reduce(&:+) || 0
-    if total_distance < race.min_total_distance
-      errors.add(:legs, "Route length is too short (#{total_distance} < #{race.min_total_distance})")
+    total = legs.map(&:distance).reduce(&:+) || 0
+    if total < race.min_total_distance_m
+      errors.add(:legs, "Route length is too short (#{Distances.m_to_s(total, race.distance_unit)} < #{race.min_total_distance} #{race.distance_unit})")
     end
-    if total_distance > race.max_total_distance
-      errors.add(:legs, "Route length is too long (#{total_distance} > #{race.max_total_distance})")
+    if total > race.max_total_distance_m
+      errors.add(:legs, "Route length is too long (#{Distances.m_to_s(total, race.distance_unit)} > #{race.max_total_distance} #{race.distance_unit})")
     end
   end
 
-  # TODO: change this to add an error entry per incorrect leg
+  # TODO: add descriptive leg details about each error found
   def validate_leg_distances
     distances = legs.map(&:distance)
-    if distances.any? { |l| l < race.min_leg_distance }
-      errors.add(:legs, "cannot use a leg with distance < #{race.min_leg_distance}")
+    if distances.any? { |l| l < race.min_leg_distance_m }
+      errors.add(:legs, "cannot use a leg with distance < #{race.min_leg_distance} #{race.distance_unit}")
     end
 
-    if distances.any? { |l| l > race.max_leg_distance }
-      errors.add(:legs, "cannot use a leg with distance > #{race.max_leg_distance}")
+    if distances.any? { |l| l > race.max_leg_distance_m }
+      errors.add(:legs, "cannot use a leg with distance > #{race.max_leg_distance} #{race.distance_unit}")
     end
   end
 
@@ -102,14 +103,26 @@ class Route < ApplicationRecord
     end
   end
 
-  def to_s
+  def to_s(unit=nil)
     return "EMPTY" if legs.size.zero?
     legs_arr = legs.to_a
 
     start_leg = legs_arr.slice!(0)
-    prefix = "[#{legs.size}/#{target_leg_count} legs, #{distance} #{race.distance_unit}]"
-    legs_arr.inject("#{prefix} #{start_leg}") do |memo, leg|
-      memo + " --(#{leg.distance.round(2)})--> #{leg.finish}"
+    prefix = "[#{legs.size}/#{target_leg_count} legs, #{distance.round(2)} #{race.distance_unit}]"
+    legs_arr.inject("#{prefix} #{start_leg.to_s(race.distance_unit)}") do |memo, leg|
+      memo + " --(#{Distances.m_to_s(leg.distance, race.distance_unit)})--> #{leg.finish}"
+    end
+  end
+
+  def to_csv(unit=nil)
+    # hacky way to return csv
+    return "0,0,0,#{race.distance_unit}" if legs.size.zero?
+    legs_arr = legs.to_a
+
+    start_leg = legs_arr.slice!(0)
+    prefix = "#{legs.size},#{target_leg_count},#{distance.round(2)},#{race.distance_unit}"
+    legs_arr.inject("#{prefix},#{start_leg.to_csv(race.distance_unit)}") do |memo, leg|
+      memo + ",#{Distances.m_to_s(leg.distance, race.distance_unit)},#{leg.finish}"
     end
   end
 

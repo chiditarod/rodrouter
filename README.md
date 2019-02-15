@@ -4,6 +4,28 @@ Ruby on Rails app to find viable routes for the CHIditarod
 
 [![Build Status](https://travis-ci.com/chiditarod/rodrouter.svg?branch=master)](https://travis-ci.com/chiditarod/rodrouter) [![Maintainability](https://api.codeclimate.com/v1/badges/35fd2373a2aa927c424e/maintainability)](https://codeclimate.com/github/chiditarod/rodrouter/maintainability)
 
+## Runtime Environment
+
+| Variable Name | Purpose |
+| ---- | ------- |
+| `GOOGLE_API_KEY` | Google Cloud Platform API key with access to the [Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/intro) |
+
+## Example Usage
+
+```bash
+bundle exec rake db:seed
+GOOGLE_API_KEY=... bundle exec rails c
+```
+
+```ruby
+# generate all legs using maps api
+BulkLegCreator.perform_now(Location.all.map(&:id))
+RouteGenerator.call(Race.first)
+
+winners = Route.all.select(&:complete?)
+puts winners.map(&:to_csv)
+puts winners.map(&:to_s)
+```
 
 ## Developer Setup
 
