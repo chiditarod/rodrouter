@@ -13,16 +13,11 @@ class Leg < ApplicationRecord
 
   # TODO: This belongs in a decorator
   def to_s(unit=nil)
-    dist = distance.present? ? case unit
-           when nil
-             "#{distance} m"
-           when 'mi'
-             "#{Distances.m_to_mi(distance).round(2)} mi"
-           when 'km'
-             "#{(distance/1000).round(2)} km"
-           end : '?'
+    "#{start || '?' } --(#{Distances.m_to_s(distance, unit)})--> #{finish || '?'}"
+  end
 
-    "#{start || '?' } --(#{dist})--> #{finish || '?'}"
+  def to_csv(unit=nil)
+    "#{start || '?' },#{Distances.m_to_s(distance, unit)},#{finish || '?'}"
   end
 
   # find Legs where the start and finish location are
