@@ -3,30 +3,30 @@ require 'rails_helper'
 RSpec.describe Leg, type: :model do
   let(:test_mode) { {min: 0.3, max: 0.5} }
 
-  describe '#create_from_locations' do
-    before do
-      3.times { FactoryBot.create :location }
-    end
+  #describe '#create_from_locations' do
+    #before do
+      #3.times { FactoryBot.create :location }
+    #end
 
-    it 'creates all possible legs between each location' do
-      expect(Leg.all).to be_empty
-      Leg.create_from_locations(Location.all, test_mode)
-      expect(Leg.where(start: Location.first).size).to eq(2)
-      expect(Leg.all.size).to eq(6)
-    end
-  end
+    #it 'creates all possible legs between each location' do
+      #expect(Leg.all).to be_empty
+      #Leg.create_from_locations(Location.all, test_mode)
+      #expect(Leg.where(start: Location.first).size).to eq(2)
+      #expect(Leg.all.size).to eq(6)
+    #end
+  #end
 
   describe '.fetch_distance' do
-    context 'when in test_mode' do
-      let(:start) { FactoryBot.create :location }
-      let(:finish) { FactoryBot.create :location }
+    #context 'when in test_mode' do
+      #let(:start) { FactoryBot.create :location }
+      #let(:finish) { FactoryBot.create :location }
 
-      it 'returns a value between min and max' do
-        leg = Leg.create(start: start, finish: finish, test_mode: test_mode)
-        expect(leg.distance < 0.5).to be true
-        expect(leg.distance > 0.3).to be true
-      end
-    end
+      #it 'returns a value between min and max' do
+        #leg = Leg.create(start: start, finish: finish, test_mode: test_mode)
+        #expect(leg.distance < 0.5).to be true
+        #expect(leg.distance > 0.3).to be true
+      #end
+    #end
 
     it 'fetches distance from Google Maps API'
   end

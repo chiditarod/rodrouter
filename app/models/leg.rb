@@ -11,8 +11,6 @@ class Leg < ApplicationRecord
   before_validation :fetch_distance, unless: Proc.new { distance.present? }
   after_save :create_mirror_leg
 
-  attr_accessor :test_mode
-
   # TODO: This belongs in a decorator
   def to_s(unit=nil)
     dist = distance.present? ? case unit
@@ -36,26 +34,16 @@ class Leg < ApplicationRecord
   end
 
   def fetch_distance
-    self.distance = if @test_mode.is_a?(Hash)
-      # TODO: optimize
-      d = Random.rand(test_mode[:max])
-      while d < test_mode[:min]
-        d = Random.rand(test_mode[:max])
-      end
-      d
-    else
-      #raise StandardError.new('Not Yet Supported!')
-      client = GoogleApiClient.new.client
-      resp = client.distance_matrix(
-        [start.full_address],
-        [finish.full_address],
-        mode: 'walking',
-        language: 'en-US',
-        avoid: 'tolls',
-        units: 'imperial')
+    client = GoogleApiClient.new.client
+    resp = client.distance_matrix(
+      [start.full_address],
+      [finish.full_address],
+      mode: 'walking',
+      language: 'en-US',
+      avoid: 'tolls',
+      units: 'imperial')
 
-      resp.dig(:rows).first.dig(:elements).first.dig(:distance, :value)
-    end
+    self.distance = resp.dig(:rows).first.dig(:elements).first.dig(:distance, :value)
   end
 
   # the current model is to "duplicate" a leg twice, using
@@ -65,15 +53,5 @@ class Leg < ApplicationRecord
   def create_mirror_leg
     return if Leg.where(start: finish, finish: start).present?
     Leg.create start: finish, finish: start, distance: distance
-  end
-
-  # create all possible legs based on a pool of locations
-  def self.create_from_locations(locations, test_mode=false)
-    locations.each do |loc_a|
-      locations.reject { |l| l == loc_a }.each do |loc_b|
-        next if Leg.where(start: loc_a, finish: loc_b).present?
-        Leg.create(start: loc_a, finish: loc_b, test_mode: test_mode)
-      end
-    end
   end
 end

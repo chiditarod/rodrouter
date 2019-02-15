@@ -1,15 +1,18 @@
 class BulkLegCreator < ApplicationJob
 
-  def perform(location_ids)
-    location_ids.each_with_index do |cur, i|
+  # including test_mode hash will prevent calls to google api
+  # and use a random value within range instead. e.g.:
+  # test_mode: { min: 12000, max: 18000 } # meters
+  def perform(location_ids, test_mode=false)
+    location_ids.each_with_index do |current, i|
       ids_without_current = location_ids.reject.with_index{|v, j| j == i }
-      fetch_distances_for_origin(cur, ids_without_current)
+      create_legs(current, ids_without_current, test_mode)
     end
   end
 
   private
 
-  def fetch_distances_for_origin(origin_id, destination_ids)
+  def create_legs(origin_id, destination_ids, test_mode)
     preexisting_legs = Leg.where(start_id: origin_id).map(&:finish_id)
     destinations = Location.where(id: destination_ids).
       reject { |l| preexisting_legs.include?(l.id) }
@@ -19,8 +22,12 @@ class BulkLegCreator < ApplicationJob
     client = GoogleApiClient.new.client
     origin = Location.find(origin_id)
 
-    ap destinations.map(&:full_address)
-    ap [origin.full_address]
+    if test_mode.is_a?(Hash)
+      destinations.each do |dest|
+        Leg.create(start: origin, finish: dest, distance: random_distance(test_mode))
+      end
+      return
+    end
 
     resp = client.distance_matrix([origin.full_address],
                                   destinations.map(&:full_address),
@@ -37,5 +44,14 @@ class BulkLegCreator < ApplicationJob
                  finish: destinations[i],
                  distance: elem.dig(:distance, :value))
     end
+  end
+
+  # TODO: optimize
+  def random_distance(test_mode)
+    val = Random.rand(test_mode[:max])
+    while val < test_mode[:min]
+      val = Random.rand(test_mode[:max])
+    end
+    val
   end
 end
