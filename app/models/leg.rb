@@ -17,7 +17,7 @@ class Leg < ApplicationRecord
            when nil
              "#{distance} m"
            when 'mi'
-             "#{Distances.km_to_mi(distance/1000).round(2)} mi"
+             "#{Distances.m_to_mi(distance).round(2)} mi"
            when 'km'
              "#{(distance/1000).round(2)} km"
            end : '?'

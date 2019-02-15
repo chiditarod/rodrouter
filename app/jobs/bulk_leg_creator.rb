@@ -19,7 +19,6 @@ class BulkLegCreator < ApplicationJob
 
     return if destinations.empty?
 
-    client = GoogleApiClient.new.client
     origin = Location.find(origin_id)
 
     if test_mode.is_a?(Hash)
@@ -29,6 +28,7 @@ class BulkLegCreator < ApplicationJob
       return
     end
 
+    client = GoogleApiClient.new.client
     resp = client.distance_matrix([origin.full_address],
                                   destinations.map(&:full_address),
                                   mode: 'walking',
