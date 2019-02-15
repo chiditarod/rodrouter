@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_074555) do
     t.string "city"
     t.string "state"
     t.integer "zip"
+    t.string "country"
     t.float "lat"
     t.float "lng"
     t.datetime "created_at", null: false
