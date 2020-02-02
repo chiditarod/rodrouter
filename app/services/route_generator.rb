@@ -11,21 +11,7 @@ class RouteGenerator
 
     puts "PROCESSING: #{route}"
 
-    pool = case
-           when route.legs.empty?
-             Leg.valid_for_race(race).where(start: race.start)
-           when route.legs_needed == 1
-             Leg.valid_for_race(race).
-               where(start: route.legs.last.finish).
-               where(finish: route.race.finish)
-           else
-             Leg.valid_for_race(race).
-               where(start: route.legs.last.finish).
-               where("finish_id NOT IN (?)", route.legs.map(&:finish_id)).
-               where("finish_id != ?", route.race.start_id)
-           end
-
-    pool.each do |leg|
+    build_pool(route).each do |leg|
       print "  TRYING: #{leg} ... "
       candidate = Route.create(race: race)
       candidate.legs = route.legs
@@ -43,4 +29,23 @@ class RouteGenerator
 
     nil
   end
+
+  def self.build_pool(route)
+    race = route.race
+    case
+    when route.legs.empty?
+      Leg.valid_for_race(race).where(start: race.start)
+    when route.legs_needed == 1
+      Leg.valid_for_race(race).
+        where(start: route.legs.last.finish).
+        where(finish: race.finish)
+    else
+      Leg.valid_for_race(race).
+        where(start: route.legs.last.finish).
+        where("finish_id NOT IN (?)", route.legs.map(&:finish_id)).
+        where("finish_id != ?", race.start_id)
+    end
+  end
+
+  private_class_method :build_pool
 end
