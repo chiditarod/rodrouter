@@ -5,7 +5,7 @@ ruby '2.5.3'
 
 gem 'rails', '~> 5.2.1', '>= 5.2.1.1'
 gem 'pg'
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 3.12'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
