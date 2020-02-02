@@ -1,6 +1,7 @@
-# rodrouter
+# Cartographer
 
-Ruby on Rails app to find viable routes for the CHIditarod
+Ruby on Rails app that finds viable routes for the CHIditarod, based on
+customizable criteria like leg length, overall race length, etc.
 
 [![Build Status](https://travis-ci.com/chiditarod/rodrouter.svg?branch=master)](https://travis-ci.com/chiditarod/rodrouter) [![Maintainability](https://api.codeclimate.com/v1/badges/35fd2373a2aa927c424e/maintainability)](https://codeclimate.com/github/chiditarod/rodrouter/maintainability)
 
@@ -55,10 +56,3 @@ export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig"
 
 bundle install
 ```
-
-# Ideas
-
-- Generate legs automatically using Google Maps API to calculate
-distances between locations
-
-
