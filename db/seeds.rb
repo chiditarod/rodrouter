@@ -7,7 +7,7 @@ locations = [
   ['Mahoneys', '551 N Ogden Ave', 'Chicago', 'IL', 60642, 'USA', 800, 600]
 ]
 
-location.each do |loc|
+locations.each do |loc|
   Location.create(name: loc[0],
                   street_address: loc[1],
                   city: loc[2],
@@ -20,7 +20,7 @@ end
 
 cobra = Location.find_by(name: "Cobra Lounge")
 
-race = Race.create(name: "CHIditarod XIV",
+race = Race.create(name: "CHIditarod XV",
                    start: cobra,
                    finish: cobra,
                    locations: Location.all,
@@ -30,5 +30,5 @@ race = Race.create(name: "CHIditarod XIV",
                    min_total_distance: 4.2,
                    max_total_distance: 5.3,
                    min_leg_distance: 0.2,
-                   max_leg_distance: 1.2,
+                   max_leg_distance: 1.3,
                    distance_unit: "mi")
