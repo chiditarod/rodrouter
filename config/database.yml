@@ -9,12 +9,12 @@ default: &default
 
 development:
   <<: *default
-  database: rodrouter_development
+  database: cartographer_development
 
 test:
   <<: *default
-  database: rodrouter_test
+  database: cartographer_test
 
 production:
   <<: *default
-  database: rodrouter_production
+  database: cartographer_production
