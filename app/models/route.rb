@@ -23,6 +23,10 @@ class Route < ApplicationRecord
   validate :validate_finish_is_at_end, if: :has_all_legs?
   validate :validate_finish_not_used_until_end, unless: :has_all_legs?
 
+  MAP_DEFAULT_ZOOM = 14
+  MAP_START_ICON = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
+  MAP_FINISH_ICON = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
+
   def complete?
     valid? && has_all_legs?
   end
@@ -112,6 +116,29 @@ class Route < ApplicationRecord
     legs_arr.inject("#{prefix} #{start_leg.to_s(race.distance_unit)}") do |memo, leg|
       memo + " --(#{Distances.m_to_s(leg.distance, race.distance_unit)})--> #{leg.finish}"
     end
+  end
+
+  def to_google_map(zoom=MAP_DEFAULT_ZOOM)
+    return nil unless complete?
+    return nil if legs.any? do |leg|
+      leg.start.lat.nil? || leg.start.lng.nil? || leg.finish.lat.nil? || leg.finish.lng.nil?
+    end
+    start_icon = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
+    finish_icon = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
+
+    legs_arr = legs.to_a
+    start_leg = legs_arr.slice!(0)
+
+    prefix = "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=#{zoom}&size=1024x768&style=feature:poi|visibility:off"
+
+    start = "&markers=icon:#{start_icon}%7C#{start_leg.start.lat_lng}"
+    legs = ""
+    legs_arr.each_with_index do |leg, i|
+      legs += "&markers=color:white%7Clabel:#{i+1}%7C#{leg.start.lat_lng}"
+    end
+    finish = "&markers=icon:#{finish_icon}%7C#{legs_arr.last.finish.lat_lng}"
+
+    "#{prefix}#{start}#{legs}#{finish}&key=#{ENV['GOOGLE_API_KEY']}"
   end
 
   def to_csv(unit=nil)
