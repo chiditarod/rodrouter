@@ -2,7 +2,13 @@
 class GeocodeLocationJob < ApplicationJob
   queue_as :default
 
-  def perform(loc_id)
+  def perform(location_ids)
+    location_ids.each do |id|
+      geocode(id)
+    end
+  end
+
+  def geocode(loc_id)
     loc = Location.find(loc_id)
 
     if loc.lat.present? && loc.lng.present?

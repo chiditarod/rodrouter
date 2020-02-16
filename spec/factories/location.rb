@@ -7,5 +7,10 @@ FactoryBot.define do
     zip { Random.rand(99999) }
     max_capacity { 150 }
     ideal_capacity { 100 }
+
+    trait :with_lat_lng do
+      sequence(:lat)
+      sequence(:lng)
+    end
   end
 end

@@ -4,7 +4,7 @@ locations = [
   ['Five Star Bar', '1424 W Chicago Ave', 'Chicago', 'IL', 60642, 'USA', 300, 200],
   ['Phyllis Musical Inn', '1800 W Division St', 'Chicago', 'IL', 60622, 'USA', 200, 150],
   ['Roots Pizza', '1924 W Chicago Ave', 'Chicago', 'IL', 60622, 'USA', 400, 250],
-  ['Mahoneys', '551 N Ogden Ave', 'Chicago', 'IL', 60642, 'USA', 800, 600]
+  ['Irish Nobleman', '1367 W Erie St', 'Chicago', 'IL', 60642, 'USA', 800, 600]
 ]
 
 locations.each do |loc|
@@ -29,6 +29,6 @@ race = Race.create(name: "CHIditarod XV",
                    people_per_team: 5,
                    min_total_distance: 4.2,
                    max_total_distance: 5.3,
-                   min_leg_distance: 0.2,
-                   max_leg_distance: 1.3,
+                   min_leg_distance: 0.4,
+                   max_leg_distance: 1.5,
                    distance_unit: "mi")

@@ -1,7 +1,5 @@
 class Location < ApplicationRecord
-  validates :max_capacity, :ideal_capacity,
-    numericality: { only_integer: true }
-
+  validates :max_capacity, :ideal_capacity, numericality: { only_integer: true }
   validates :name, presence: true, uniqueness: true
 
   # allow either street address or lat/lng combo
@@ -24,5 +22,12 @@ class Location < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def lat_lng
+    if lat == nil || lng == nil
+      return nil
+    end
+    "#{lat},#{lng}"
   end
 end

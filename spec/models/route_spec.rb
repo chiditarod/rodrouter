@@ -103,7 +103,40 @@ RSpec.describe Route, type: :model do
         expect(route).to be_invalid
       end
     end
+  end
 
+  describe '.to_google_map' do
+    context 'when the route is not complete' do
+      let(:route) { FactoryBot.create :incomplete_route }
+      it 'returns nil' do
+        expect(route.to_google_map).to be_nil
+      end
+    end
 
+    context 'when the route is complete but has no lat/lng data' do
+      let(:route) { FactoryBot.create :sequential_route }
+      it 'returns nil' do
+        expect(route.to_google_map).to be_nil
+      end
+    end
+
+    context 'when the route is complete and has lat/lng data' do
+      let(:route) { FactoryBot.create :sequential_route, :with_lat_lng }
+      let(:expected) do
+        legs_arr = route.legs.to_a
+        start_leg = legs_arr.slice!(0)
+
+        legs = ""
+        legs_arr.each_with_index do |leg, i|
+          legs += "&markers=color:white%7Clabel:#{i+1}%7C#{leg.start.lat_lng}"
+        end
+
+        "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=#{Route::MAP_DEFAULT_ZOOM}&size=1024x768&style=feature:poi|visibility:off&markers=icon:#{Route::MAP_START_ICON}%7C#{start_leg.start.lat_lng}#{legs}&markers=icon:#{Route::MAP_START_ICON}%7C#{legs_arr.last.finish.lat_lng}&key="
+      end
+
+      it 'returns correct URL' do
+        expect(route.to_google_map).to eq(expected)
+      end
+    end
   end
 end

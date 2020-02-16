@@ -23,7 +23,7 @@ class RouteGenerator
       else
         puts "INVALID"
         puts candidate.errors.messages.map{|m| "    #{m[1].join('\n')}" }
-        #candidate.destroy
+        #candidate.destroy # TODO
       end
     end
 

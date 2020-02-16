@@ -3,30 +3,58 @@
 Ruby on Rails app that finds viable routes for the CHIditarod, based on
 customizable criteria like leg length, overall race length, etc.
 
-[![Build Status](https://travis-ci.com/chiditarod/cartographer.svg?branch=master)](https://travis-ci.com/chiditarod/cartographer) [![Maintainability](https://api.codeclimate.com/v1/badges/35fd2373a2aa927c424e/maintainability)](https://codeclimate.com/github/chiditarod/cartographer/maintainability)
+[![Build Status](https://travis-ci.com/chiditarod/cartographer.svg?branch=master)](https://travis-ci.com/chiditarod/cartographer) [![Maintainability](https://api.codeclimate.com/v1/badges/0f8b7b85f89b0024665a/maintainability)](https://codeclimate.com/github/chiditarod/cartographer/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/0f8b7b85f89b0024665a/test_coverage)](https://codeclimate.com/github/chiditarod/cartographer/test_coverage)
+
+## Google API Setup
+
+Your Google Cloud Platform account and associated [API key](https://console.cloud.google.com/apis/credentials) must have access to the following APIs:
+
+- [Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/intro)
+- [Geocoding API](https://developers.google.com/maps/documentation/geocoding/start)
+- [Static Maps API](https://developers.google.com/maps/documentation/maps-static/intro)
 
 ## Runtime Environment
 
 | Variable Name | Purpose |
 | ---- | ------- |
-| `GOOGLE_API_KEY` | Google Cloud Platform API key with access to the [Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/intro) |
+| `GOOGLE_API_KEY` | Google Cloud Platform API key with access to the APIs listed above. |
 
 ## Example Usage
+
+### Seed
 
 ```bash
 bundle exec rake db:seed
 GOOGLE_API_KEY=... bundle exec rails c
 ```
 
-```ruby
-# generate all legs using maps api
-BulkLegCreator.perform_now(Location.all.map(&:id))
-RouteGenerator.call(Race.first)
+### Generate all Legs using Google Maps API
 
+```ruby
+BulkLegCreator.perform_now(Location.pluck(:id))
+```
+
+### Generate Routes
+
+```ruby
+RouteGenerator.call(Race.first)
 winners = Route.all.select(&:complete?)
 puts winners.map(&:to_csv)
 puts winners.map(&:to_s)
 ```
+
+### Geocode Locations using Google Maps API
+
+```ruby
+GeocodeLocationJob.perform_now(Location.pluck(:id))
+```
+
+### Clean things up
+
+```ruby
+Race.destroy_all; Route.destroy_all; Leg.destroy_all; Location.destroy_all; Leg.destroy_all; nil
+```
+
 
 ## Developer Setup
 
