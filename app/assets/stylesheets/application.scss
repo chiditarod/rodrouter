@@ -1,0 +1,14 @@
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
+
+.routemap h1 {
+    font-size: 3.5rem;
+    font-weight: 400!important;
+    line-height: 1.2;
+}
+
+.routemap h2 {
+    font-size: 3.0rem;
+    font-weight: 300!important;
+    line-height: 1.2;
+}

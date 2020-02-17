@@ -18,6 +18,8 @@ Your Google Cloud Platform account and associated [API key](https://console.clou
 | Variable Name | Purpose |
 | ---- | ------- |
 | `GOOGLE_API_KEY` | Google Cloud Platform API key with access to the APIs listed above. |
+| `MOCK_MAP` | When `true` load a fake route map instead of querying the Google Static API. |
+
 
 ## Example Usage
 
@@ -38,7 +40,7 @@ BulkLegCreator.perform_now(Location.pluck(:id))
 
 ```ruby
 RouteGenerator.call(Race.first)
-winners = Route.all.select(&:complete?)
+winners = Route.complete
 puts winners.map(&:to_csv)
 puts winners.map(&:to_s)
 ```

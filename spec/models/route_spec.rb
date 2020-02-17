@@ -13,6 +13,7 @@ RSpec.describe Route, type: :model do
 
       it 'is not complete' do
         expect(route.complete?).to be false
+        expect(route.complete).to be false
       end
     end
 
@@ -23,8 +24,12 @@ RSpec.describe Route, type: :model do
         expect(route).to be_valid
       end
 
-      it 'is complete' do
+      it 'completes all requirements' do
         expect(route.complete?).to be true
+      end
+
+      it 'sets complete bool to true' do
+        expect(route.complete).to be true
       end
     end
 
@@ -106,6 +111,7 @@ RSpec.describe Route, type: :model do
   end
 
   describe '.to_google_map' do
+
     context 'when the route is not complete' do
       let(:route) { FactoryBot.create :incomplete_route }
       it 'returns nil' do
@@ -115,28 +121,48 @@ RSpec.describe Route, type: :model do
 
     context 'when the route is complete but has no lat/lng data' do
       let(:route) { FactoryBot.create :sequential_route }
-      it 'returns nil' do
-        expect(route.to_google_map).to be_nil
+      it 'returns descriptive text' do
+        expect(route.to_google_map).to eq('requires lat and lng')
       end
     end
 
     context 'when the route is complete and has lat/lng data' do
       let(:route) { FactoryBot.create :sequential_route, :with_lat_lng }
-      let(:expected) do
-        legs_arr = route.legs.to_a
-        start_leg = legs_arr.slice!(0)
-
-        legs = ""
-        legs_arr.each_with_index do |leg, i|
-          legs += "&markers=color:white%7Clabel:#{i+1}%7C#{leg.start.lat_lng}"
-        end
-
-        "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=#{Route::MAP_DEFAULT_ZOOM}&size=1024x768&style=feature:poi|visibility:off&markers=icon:#{Route::MAP_START_ICON}%7C#{start_leg.start.lat_lng}#{legs}&markers=icon:#{Route::MAP_START_ICON}%7C#{legs_arr.last.finish.lat_lng}&key="
-      end
+      let(:expected) { map_url(route, Route::MAP_DEFAULT_ZOOM) }
 
       it 'returns correct URL' do
         expect(route.to_google_map).to eq(expected)
       end
+    end
+
+    context 'when MOCK_MAP env var is set' do
+      let(:route) { FactoryBot.create :sequential_route, :with_lat_lng }
+      it 'returns returns a mock map' do
+        stub_const('ENV', ENV.to_hash.merge('MOCK_MAP' => 'true'))
+        expect(route.to_google_map).to eq('/mock-route-map.png')
+      end
+    end
+
+    context 'with a custom zoom level' do
+      let(:route) { FactoryBot.create :sequential_route, :with_lat_lng }
+      let(:zoom) { 20 }
+      let(:expected) { map_url(route, zoom) }
+
+      it 'returns returns a map with custom zoom level' do
+        expect(route.to_google_map(zoom)).to eq(expected)
+      end
+    end
+
+    def map_url(route, zoom)
+      legs_arr = route.legs.to_a
+      start_leg = legs_arr.slice!(0)
+  
+      legs = ""
+      legs_arr.each_with_index do |leg, i|
+        legs += "&markers=color:white%7Clabel:#{i+1}%7C#{leg.start.lat_lng}"
+      end
+  
+      "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=#{zoom}&size=1024x768&style=feature:poi|visibility:off&markers=icon:#{Route::MAP_START_ICON}%7C#{start_leg.start.lat_lng}#{legs}&markers=icon:#{Route::MAP_START_ICON}%7C#{legs_arr.last.finish.lat_lng}&key="
     end
   end
 end

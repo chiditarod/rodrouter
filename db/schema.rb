@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_28_074555) do
+ActiveRecord::Schema.define(version: 2020_02_17_065226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,8 @@ ActiveRecord::Schema.define(version: 2019_01_28_074555) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "leg_threshold_crossed", default: false, null: false
+    t.boolean "complete", default: false, null: false
+    t.string "name"
   end
 
 end
