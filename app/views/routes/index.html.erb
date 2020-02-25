@@ -1,0 +1,24 @@
+<h1><%= @race.name %></h1>
+<h3>Start: <%= @race.start %></h3>
+<h3>Finish: <%= @race.finish %></h3>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>ID</th>
+    <th>Distance</th>
+    <% @race.num_stops.times do |i| %>
+      <th>Stop <%= i+1 %></th>
+    <% end %>
+  </tr>
+<% @routes.each do |route| %>
+  <tr>
+    <td><%= route.name %></td>
+    <td><a href="/races/<%=@race.id%>/routes/<%=route.id%>"><%= route.id %></a></td>
+    <td><%= route.distance.round(2) %></td>
+    <% @race.num_stops.times do |i| %>
+      <td><%= route.legs[i].finish %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>

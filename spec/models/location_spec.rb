@@ -22,7 +22,7 @@ RSpec.describe Location, type: :model do
       end
     end
 
-    context 'when lat and lng are not present' do
+    context 'when lat and lng are both present' do
       let(:loc) { FactoryBot.build(:location, :with_lat_lng) }
       it 'returns comma-separated value' do
         expect(loc.lat_lng).to eq("#{loc.lat},#{loc.lng}")

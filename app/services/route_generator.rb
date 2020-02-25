@@ -3,6 +3,7 @@ class RouteGenerator
   def self.call(race, route=nil)
     route ||= Route.create(race: race)
 
+    # win condition
     if route.complete?
       route.save!
       puts "COMPLETE: #{route}"

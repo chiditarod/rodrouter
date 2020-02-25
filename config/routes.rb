@@ -3,4 +3,8 @@
 Rails.application.routes.draw do
   get 'home/index'
   root 'home#index'
+
+  resources :races, only: [:index] do
+    resources :routes, only: [:index, :show]
+  end
 end

@@ -1,0 +1,31 @@
+<div class="text-center">
+  <div class="routemap">
+    <h1 class="display-4"><%= @race.name %></h1>
+    <h2>Route <%= @route.name %></h4>
+
+    <img src="<%= @route.to_google_map(ENV['MOCK_MAP']) %>"/>
+
+    <br/>
+    <br/>
+
+    <%
+      count = 0
+    %>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>Start&nbsp;-&nbsp;<%= @race.start %>:&nbsp;<%= @race.start.street_address %></h4>
+        <% @left.each do |leg| %>
+          <h3><%= count+=1 %>&nbsp;-&nbsp;<%= leg.start.name %>:&nbsp;<%= leg.start.street_address %></h4>
+        <% end %>
+      </div>
+
+      <div class="col-sm-6">
+        <% @right.each do |leg| %>
+          <h3><%= count+=1 %>&nbsp;-&nbsp;<%= leg.start.name %>:&nbsp;<%= leg.start.street_address %></h4>
+        <% end %>
+        <h3>Finish&nbsp;-&nbsp;<%= @race.finish %>:&nbsp;<%= @race.finish.street_address %></h4>
+      </div>
+    </div>
+  </div>
+</div>

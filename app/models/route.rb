@@ -9,8 +9,7 @@ class Route < ApplicationRecord
            :validate_leg_locations_allowed_in_race,
            :validate_finish_is_at_end
 
-  # TODO:
-  # Add a DB boolean and index when the route is complete, and add a hook to check/modify it
+  scope :complete, -> { where(complete: true).order(:name) }
 
   # once a certain # of legs are added, set a boolean attribute
   # on the record that enables additional validations from here on out
@@ -22,6 +21,8 @@ class Route < ApplicationRecord
 
   validate :validate_finish_is_at_end, if: :has_all_legs?
   validate :validate_finish_not_used_until_end, unless: :has_all_legs?
+
+  before_save :set_complete_bool
 
   MAP_DEFAULT_ZOOM = 14
   MAP_START_ICON = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
@@ -118,11 +119,18 @@ class Route < ApplicationRecord
     end
   end
 
+  # https://www.viget.com/articles/make-remote-files-local-with-ruby-tempfile/
+  def fetch_google_map
+  end
+
   def to_google_map(zoom=MAP_DEFAULT_ZOOM)
-    return nil unless complete?
-    return nil if legs.any? do |leg|
+    return nil unless complete
+    return "requires lat and lng" if legs.any? do |leg|
       leg.start.lat.nil? || leg.start.lng.nil? || leg.finish.lat.nil? || leg.finish.lng.nil?
     end
+
+    return '/mock-route-map.png' if ENV['MOCK_MAP']
+
     start_icon = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
     finish_icon = "https://maps.google.com/mapfiles/kml/paddle/wht-stars.png"
 
@@ -154,6 +162,13 @@ class Route < ApplicationRecord
   end
 
   private
+
+  def set_complete_bool
+    return if self.complete
+    if self.complete?
+      self.complete = true
+    end
+  end
 
   def check_leg_threshold
     self.leg_threshold_crossed ||= (legs.size >= target_leg_count)
