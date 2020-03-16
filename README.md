@@ -43,6 +43,9 @@ RouteGenerator.call(Race.first)
 winners = Route.complete
 puts winners.map(&:to_csv)
 puts winners.map(&:to_s)
+
+selected = winners.select{|r| r.name != nil}
+selected.map(&:to_csv)
 ```
 
 ### Geocode Locations using Google Maps API
